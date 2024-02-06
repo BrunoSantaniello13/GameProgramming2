@@ -20,17 +20,17 @@ public class playerController : MonoBehaviour
         transform.Translate(Dir() * speed * Time.deltaTime);
     }
 
-    // Get the input direction from the player's controls.
+   
     public Vector3 Dir()
     {
-        // Get input values for vertical (up/down) and horizontal (left/right) axes.
+        // Gets input values for vertical (up/down) and horizontal (left/right) axes.
         float y = Input.GetAxis("Vertical");
         float x = Input.GetAxis("Horizontal");
 
-        // Create a vector from the input values, representing the desired movement direction.
+        // Creates a vector from the input values, representing the desired movement direction.
         Vector3 myDir = new Vector3(x, y, 0);
 
-        // Normalize the vector to ensure consistent speed in all directions.
+        // Normalizes the vector to ensure consistent speed in all directions.
         return myDir.normalized;
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -38,7 +38,7 @@ public class playerController : MonoBehaviour
         Debug.Log("other: " + collision.gameObject.name);
         Debug.Log("other: tag: " + collision.gameObject.tag);
 
-        if(collision.gameObject.tag == "Collectible")
+        if(collision.gameObject.tag == "Collectable")
         {
             Destroy(collision.gameObject);
             myScore++;
