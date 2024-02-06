@@ -6,7 +6,7 @@ public class playerController : MonoBehaviour
 {
 
     public float speed = 5.0f; // Adjust this value to control the speed
-
+    int myScore;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,5 +32,16 @@ public class playerController : MonoBehaviour
 
         // Normalize the vector to ensure consistent speed in all directions.
         return myDir.normalized;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("other: " + collision.gameObject.name);
+        Debug.Log("other: tag: " + collision.gameObject.tag);
+
+        if(collision.gameObject.tag == "Collectible")
+        {
+            Destroy(collision.gameObject);
+            myScore++;
+        }
     }
 }
