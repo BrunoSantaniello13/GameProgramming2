@@ -8,6 +8,9 @@ public class gameManager : MonoBehaviour
 {
     public static int myScore;
 
+    [Header("Timer Text")]
+    public TextMeshProUGUI TimerText;
+
     [Header("Global vars")]
     public GameObject myPlayer;
     public float timer;
@@ -68,6 +71,8 @@ public class gameManager : MonoBehaviour
                     EnterFinale();
                 }
 
+                UpdateTimerUI();
+
                 //timer is global, spawnTimer tracks collectibles
                 timer += Time.deltaTime;
                 spawnTimer += Time.deltaTime;
@@ -96,8 +101,16 @@ public class gameManager : MonoBehaviour
         }
     }
 
-    //state change for playing mode, turn on players, disable any start menu logic
-    void EnterPlaying()
+    void UpdateTimerUI()
+    {
+        if (TimerText != null)
+        {
+            // Timer Text on Screen
+            TimerText.text = "Timer: " + Mathf.Round(timer).ToString();
+        }
+    }
+        //state change for playing mode, turn on players, disable any start menu logic
+        void EnterPlaying()
     {
         timer = 0f;
         myGameState = GameState.PLAYING;

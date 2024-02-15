@@ -35,11 +35,8 @@ public class playerController : MonoBehaviour
     }
     public void OnCollisionEnter2D(Collision2D collision)
     {
-        //Debug.Log("other: " + collision.gameObject.name);
-        //Debug.Log("other: tag: " + collision.gameObject.tag);
        
-
-        if(collision.gameObject.tag == "Collectable")
+      if(collision.gameObject.tag == "Collectable")
         {
             Destroy(collision.gameObject);
             myScore++;
