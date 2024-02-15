@@ -103,7 +103,17 @@ public class gameManager : MonoBehaviour
         myGameState = GameState.PLAYING;
         myPlayer.SetActive(true);
         TitleText.enabled = false;
+
+        //resets score from playerController
         playerController.myScore = 0;
+         
+        //find colletables and destroy them
+        GameObject[] collectables = GameObject.FindGameObjectsWithTag("Collectable");
+        foreach (GameObject collectable in collectables)
+        {
+            Destroy(collectable);
+        }
+
     }
 
     void EnterFinale()
@@ -111,6 +121,8 @@ public class gameManager : MonoBehaviour
         myGameState = GameState.GAMEOVER;
         myPlayer.SetActive(false);
         TitleText.enabled = true;
+
+        //Take Score from playerController and shows it up.
         TitleText.text = "Time's up. Your Total Score: " + playerController.myScore + ". Press [SPACE] to restart";
     }
   
