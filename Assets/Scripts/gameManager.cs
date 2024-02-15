@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class gameManager : MonoBehaviour
 {
+    public static int myScore;
+
     [Header("Global vars")]
     public GameObject myPlayer;
     public float timer;
@@ -101,6 +103,7 @@ public class gameManager : MonoBehaviour
         myGameState = GameState.PLAYING;
         myPlayer.SetActive(true);
         TitleText.enabled = false;
+        playerController.myScore = 0;
     }
 
     void EnterFinale()
@@ -108,7 +111,8 @@ public class gameManager : MonoBehaviour
         myGameState = GameState.GAMEOVER;
         myPlayer.SetActive(false);
         TitleText.enabled = true;
-        TitleText.text = "CONGRATS, You did it. Press [SPACE] to restart";
+        TitleText.text = "Time's up. Your Total Score: " + playerController.myScore + ". Press [SPACE] to restart";
     }
+  
 }
 
