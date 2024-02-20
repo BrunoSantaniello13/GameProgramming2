@@ -602,7 +602,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13.3, y: -46.346733}
+  m_AnchoredPosition: {x: -0.000002861, y: -29.3}
   m_SizeDelta: {x: 642.2975, y: 244.1086}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &191289645
@@ -625,7 +625,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press Space to Start
+  m_text: 'Press Space to Start
+
+    You Have 60 Seconds'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -659,7 +661,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -851,7 +853,7 @@ MonoBehaviour:
   spawnXBounds: {x: -8.5, y: 8.5}
   spawnYBounds: {x: -4.8, y: 4.8}
   TitleText: {fileID: 191289645}
-  timeLimit: 45
+  timeLimit: 60
   myGameState: 2
 --- !u!4 &239224171
 Transform:
@@ -4026,7 +4028,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 171.5, y: -149.9}
+  m_AnchoredPosition: {x: 139.7, y: 35.5}
   m_SizeDelta: {x: 642.2975, y: 244.1086}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1821699070
@@ -4076,8 +4078,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
