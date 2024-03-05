@@ -5,11 +5,19 @@ using UnityEngine;
 
 public class playerController3d : MonoBehaviour
 {
+    [Header("Base Vars")]
     public float speed = 10f;
     public float lookSpeed = 100f;
+
+    [Header("Jump Vars")]
+    public float jumpForce = 50f;
+    public bool canJump;
+    public bool jumped;
+
+
     Rigidbody myRB;
     public Camera myCam;
-    public float camLock;
+    public float camLock; //maxlook up/down
 
     Vector3 myLook;
 
@@ -19,6 +27,8 @@ public class playerController3d : MonoBehaviour
         myRB = GetComponent<Rigidbody>();
         myLook = myCam.transform.forward;
         Cursor.lockState = CursorLockMode.Locked;
+        canJump = true;
+        jumped = false;
     }
     // Update is called once per frame
     void Update()
@@ -31,10 +41,17 @@ public class playerController3d : MonoBehaviour
         myLook += DeltaLook() * Time.deltaTime;
 
         //clamp the magnitude to keep the player from looking fully upside down
-        myLook = Vector3.ClampMagnitude(myLook, camLock);
+        myLook.y = Mathf.Clamp(myLook.y, -camLock, camLock);
 
         transform.rotation = Quaternion.Euler(0f, myLook.x, 0f);
         myCam.transform.rotation = Quaternion.Euler(-myLook.y, myLook.x, 0f);
+
+        //check for key and ability to jump (canJump boolean)
+        if (Input.GetKey(KeyCode.Space) && canJump)
+        {
+            jumped = true;
+        }
+        else { jumped = false; }
     }
 
     void FixedUpdate()
@@ -48,6 +65,11 @@ public class playerController3d : MonoBehaviour
 
         //combined velocity of the rigidbody in black
         Debug.DrawRay(transform.position + Vector3.up, myRB.velocity.normalized * 5f, Color.black);
+
+        if (jumped && canJump)
+        {
+            Jump();
+        }
     }
 
     Vector3 Dir()
@@ -81,6 +103,23 @@ public class playerController3d : MonoBehaviour
 
 
         return dLook;
-
     }
+
+    //add a jumpForce and flip boolean for jump request (jumped) to false
+    void Jump()
+    {
+        myRB.AddForce(Vector3.up * jumpForce);
+        jumped = false;
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.tag == "Terrain") { canJump = true; }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Terrain") { canJump = false; }
+    }
+
 }
