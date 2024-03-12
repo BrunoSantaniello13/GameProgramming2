@@ -10,9 +10,15 @@ public class playerController3d : MonoBehaviour
     public float lookSpeed = 100f;
 
     [Header("Jump Vars")]
-    public float jumpForce = 50f;
+    public float jumpForce = 100f;
     public bool canJump;
     public bool jumped;
+
+    [Header("Kick Vars")]
+    public Transform myFoot;
+    public float kickForce = 50f;
+    public float upForce = 10f;
+    public float legLength = 5f;
 
 
     Rigidbody myRB;
@@ -21,14 +27,25 @@ public class playerController3d : MonoBehaviour
 
     Vector3 myLook;
 
+    void Awake()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        Quaternion currentRot = transform.rotation;
+        myCam.transform.rotation = currentRot;
+        myLook = myCam.transform.forward;
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
         myRB = GetComponent<Rigidbody>();
-        myLook = myCam.transform.forward;
-        Cursor.lockState = CursorLockMode.Locked;
         canJump = true;
         jumped = false;
+        //get the current mouse position
+        //zero out our rotations based off that value
+
     }
     // Update is called once per frame
     void Update()
@@ -52,6 +69,11 @@ public class playerController3d : MonoBehaviour
             jumped = true;
         }
         else { jumped = false; }
+
+        if (Input.GetKey(KeyCode.Return))
+        {
+            Kick();
+        }
     }
 
     void FixedUpdate()
@@ -60,11 +82,11 @@ public class playerController3d : MonoBehaviour
         myRB.AddForce(pMove * speed * Time.fixedDeltaTime);
 
         //player raw input - in magenta
-        Debug.DrawRay(transform.position, pMove * 5f, Color.magenta);
-        Debug.DrawRay(transform.position, Vector3.up, Color.magenta);
+        //Debug.DrawRay(transform.position, pMove * 5f, Color.magenta);
+        //Debug.DrawRay(transform.position, Vector3.up, Color.magenta);
 
         //combined velocity of the rigidbody in black
-        Debug.DrawRay(transform.position + Vector3.up, myRB.velocity.normalized * 5f, Color.black);
+        //Debug.DrawRay(transform.position + Vector3.up, myRB.velocity.normalized*5f, Color.black);
 
         if (jumped && canJump)
         {
@@ -98,7 +120,7 @@ public class playerController3d : MonoBehaviour
 
         if (dLook != Vector3.zero)
         {
-            Debug.Log("delta look: " + dLook);
+            //Debug.Log("delta look: " + dLook);
         }
 
 
@@ -112,6 +134,21 @@ public class playerController3d : MonoBehaviour
         jumped = false;
     }
 
+    void Kick()
+    {
+        RaycastHit hit;
+        bool rayCast = false; ;
+        //bool rayCast = Physics.Raycast(myFoot.position, myCam.transform.forward, out hit, 5f);
+        if (Physics.SphereCast(myFoot.position, 1f, myCam.transform.position, out hit, legLength)) { rayCast = true; }
+        Debug.DrawRay(myFoot.position, myCam.transform.forward * legLength, Color.blue);
+        Debug.Log("raycast: " + hit);
+
+        if (rayCast)
+        {
+            hit.rigidbody.AddExplosionForce(kickForce, hit.point, legLength, upForce);
+        }
+    }
+
     void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.tag == "Terrain") { canJump = true; }
@@ -123,3 +160,4 @@ public class playerController3d : MonoBehaviour
     }
 
 }
+
