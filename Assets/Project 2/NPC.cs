@@ -8,7 +8,8 @@ public class NPC : MonoBehaviour
     public float mySpeed;
     public GameObject curPlayer;
     public GameObject curBall;
-    public GameObject curTarget;
+    public GameObject myTarget;
+    public NPC myScript;
 
     // Start is called before the first frame update
     void Start()
@@ -17,6 +18,7 @@ public class NPC : MonoBehaviour
         curPlayer = GameObject.FindWithTag("Player");
         curBall = GameObject.FindWithTag("Ball");
         myScript = GetComponent<NPC>();
+
     }
 
     // Update is called once per frame
@@ -24,16 +26,19 @@ public class NPC : MonoBehaviour
     {
         Move();
     }
+
     internal virtual void Move()
     {
-        Debug.Log("move not define for this class");
+        Debug.Log("move not defined for this class");
     }
+
     internal virtual void Jump()
     {
-        Debug.Log("move not defined");
+        Debug.Log("jump not defined");
     }
+
     internal virtual void Kick()
     {
-        Debug.Log("move not defined");
+        Debug.Log("kick not defined");
     }
 }

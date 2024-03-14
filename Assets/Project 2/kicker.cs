@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
+using UnityEngine.Animations;
 
-public class kicker : MonoBehaviour
+public class kicker : NPC
 {
-   
 
     // Update is called once per frame
     void Update()
@@ -13,9 +12,10 @@ public class kicker : MonoBehaviour
         transform.LookAt(curBall.transform);
         Move();
     }
+
     internal override void Move()
-    { 
-        Vector3 dir = transform.TransfromDirection(Vector3.forward);
+    {
+        Vector3 dir = transform.TransformDirection(Vector3.forward);
         dir *= mySpeed;
         myRB.AddForce(dir);
     }

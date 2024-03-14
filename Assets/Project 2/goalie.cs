@@ -2,20 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class goalie : MonoBehaviour
+public class goalie : NPC
 {
     // Start is called before the first frame update
-    //void Start() {   }
+    //void Start()   {     }
 
     // Update is called once per frame
-    //void Update() {   }}
+    //void Update() { }
 
     internal override void Move()
     {
-     float zDiff = curball.transform.position.z - transfrom.position.z;
-     Vector3 dir = new Vector3(0f, 0f, zDiff).normalized;
-     CapsuleDirection2D *= mySpeed;
-     myRB.AddForce(dir);
+        float zDiff = curBall.transform.position.z - transform.position.z;
+        Vector3 dir = new Vector3(0f, 0f, zDiff).normalized;
+        dir *= mySpeed;
+        myRB.AddForce(dir);
     }
-
 }
