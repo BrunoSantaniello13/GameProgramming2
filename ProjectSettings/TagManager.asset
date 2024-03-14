@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Terrain
   - Ball
+  - Platform
   layers:
   - Default
   - TransparentFX

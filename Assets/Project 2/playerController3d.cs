@@ -122,6 +122,11 @@ public class playerController3d : MonoBehaviour
         {
             //Debug.Log("delta look: " + dLook);
         }
+        //if(onStartTimer <1f)
+       // {
+        //    dLook = Vector3.ClampMagnitude(dLook, onStartTimer * 10f);
+
+       // }
 
 
         return dLook;
@@ -151,13 +156,24 @@ public class playerController3d : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.tag == "Terrain") { canJump = true; }
+        if (collision.gameObject.CompareTag("Terrain") || collision.gameObject.CompareTag("Platform"))
+        {
+            canJump = true;
+
+            // Check if the collided object has a Rigidbody component
+            Rigidbody otherRB = collision.gameObject.GetComponent<Rigidbody>();
+            if (otherRB != null)
+            {
+                // Deactivate kinematic property of the Rigidbody
+                otherRB.isKinematic = false;
+            }
+        }
     }
 
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Terrain") { canJump = false; }
-    }
+    } 
 
 }
 
