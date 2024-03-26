@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class playerController3d : MonoBehaviour
+public class playerController3D : MonoBehaviour
 {
     [Header("Base Vars")]
     public float speed = 10f;
     public float lookSpeed = 100f;
 
     [Header("Jump Vars")]
-    public float jumpForce = 100f;
+    public float jumpForce = 50f;
     public bool canJump;
     public bool jumped;
+
+    public float jumpTimer = 50f; // Timer for tracking jump duration
+    public float maxJumpTime = 50.0f; // Maximum duration for which the player can jump
+
 
     [Header("Kick Vars")]
     public Transform myFoot;
@@ -26,14 +31,15 @@ public class playerController3d : MonoBehaviour
     public float camLock; //maxlook up/down
 
     Vector3 myLook;
+    float onStartTimer;
+
+   
 
     void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        Quaternion currentRot = transform.rotation;
-        myCam.transform.rotation = currentRot;
-        myLook = myCam.transform.forward;
+        myLook = transform.localEulerAngles;
     }
 
 
@@ -43,6 +49,7 @@ public class playerController3d : MonoBehaviour
         myRB = GetComponent<Rigidbody>();
         canJump = true;
         jumped = false;
+        onStartTimer = 0f;
         //get the current mouse position
         //zero out our rotations based off that value
 
@@ -50,21 +57,20 @@ public class playerController3d : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 playerLook = myCam.transform.forward;
-
+        onStartTimer += Time.deltaTime;
         //camera forward direction
-        Debug.DrawRay(transform.position, playerLook * 3f, Color.green);
-
         myLook += DeltaLook() * Time.deltaTime;
+        Debug.DrawRay(transform.position, myCam.transform.forward * 3f, Color.green);
 
         //clamp the magnitude to keep the player from looking fully upside down
         myLook.y = Mathf.Clamp(myLook.y, -camLock, camLock);
 
+        //Debug.Log("myLook: " + myLook);
         transform.rotation = Quaternion.Euler(0f, myLook.x, 0f);
         myCam.transform.rotation = Quaternion.Euler(-myLook.y, myLook.x, 0f);
 
         //check for key and ability to jump (canJump boolean)
-        if (Input.GetKey(KeyCode.Space) && canJump)
+        if(Input.GetKey(KeyCode.Space) && canJump)
         {
             jumped = true;
         }
@@ -105,7 +111,7 @@ public class playerController3d : MonoBehaviour
         //remove console clutter by only logging direction when input is pressed
         if (myDir != Vector3.zero)
         {
-            Debug.Log("Player Move Dir: " + myDir);
+            //Debug.Log("Player Move Dir: " + myDir);
         }
 
         return myDir;
@@ -113,7 +119,7 @@ public class playerController3d : MonoBehaviour
 
     Vector3 DeltaLook()
     {
-        Vector3 dLook = Vector3.zero;
+        Vector3 dLook;
         float rotY = Input.GetAxisRaw("Mouse Y") * lookSpeed;
         float rotX = Input.GetAxisRaw("Mouse X") * lookSpeed;
         dLook = new Vector3(rotX, rotY, 0);
@@ -122,22 +128,36 @@ public class playerController3d : MonoBehaviour
         {
             //Debug.Log("delta look: " + dLook);
         }
-        //if(onStartTimer <1f)
-       // {
-        //    dLook = Vector3.ClampMagnitude(dLook, onStartTimer * 10f);
 
-       // }
+        if(onStartTimer < 1f)
+        {
+            dLook = Vector3.ClampMagnitude(dLook, onStartTimer * 10f);
+        }
 
-
-        return dLook;
+        return dLook;  
     }
 
     //add a jumpForce and flip boolean for jump request (jumped) to false
     void Jump()
     {
-        myRB.AddForce(Vector3.up * jumpForce);
-        jumped = false;
+        // Apply jump force only if the jump timer is less than a certain duration
+        if (jumpTimer < maxJumpTime)
+        {
+            myRB.AddForce(Vector3.up * jumpForce);
+            jumpTimer += Time.fixedDeltaTime; // Increase the jump timer
+        }
+        else
+        {
+            jumped = false; // Disable jumping if the max jump time is reached
+        }
+
+        // Reset jump timer when the player is grounded
+        if (canJump)
+        {
+            jumpTimer = 0f;
+        }
     }
+
 
     void Kick()
     {
@@ -148,9 +168,9 @@ public class playerController3d : MonoBehaviour
         Debug.DrawRay(myFoot.position, myCam.transform.forward * legLength, Color.blue);
         Debug.Log("raycast: " + hit);
 
-        if (rayCast)
+        if(rayCast)
         {
-            hit.rigidbody.AddExplosionForce(kickForce, hit.point, legLength, upForce);
+            hit.rigidbody.AddExplosionForce(kickForce,hit.point,legLength,upForce);
         }
     }
 
@@ -158,22 +178,29 @@ public class playerController3d : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Terrain") || collision.gameObject.CompareTag("Platform"))
         {
+            Debug.Log("OnCollisionStay method called.");
             canJump = true;
+        }
 
-            // Check if the collided object has a Rigidbody component
-            Rigidbody otherRB = collision.gameObject.GetComponent<Rigidbody>();
-            if (otherRB != null)
-            {
-                // Deactivate kinematic property of the Rigidbody
-                otherRB.isKinematic = false;
-            }
+
+        if (collision.gameObject.tag == "Platform")
+        {
+            Debug.Log("hit platform");
+            StartCoroutine(killPlaform(2f, collision.gameObject));
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Terrain") { canJump = false; }
-    } 
+    }
+
+    IEnumerator killPlaform(float time, GameObject target)
+    {
+        Debug.Log("started coroutine" + time);
+        yield return new WaitForSeconds(time);
+        target.GetComponent<Rigidbody>().isKinematic = false;
+        Debug.Log("ended coroutine");
+    }
 
 }
-
