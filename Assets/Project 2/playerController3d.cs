@@ -69,12 +69,19 @@ public class playerController3D : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, myLook.x, 0f);
         myCam.transform.rotation = Quaternion.Euler(-myLook.y, myLook.x, 0f);
 
-        //check for key and ability to jump (canJump boolean)
-        if(Input.GetKey(KeyCode.Space) && canJump)
+        if (Input.GetKeyDown(KeyCode.Space) && canJump)
         {
             jumped = true;
+            jumpTimer = 0f; // Reset jump timer when space bar is pressed
         }
-        else { jumped = false; }
+        else if (Input.GetKey(KeyCode.Space) && jumped && jumpTimer < maxJumpTime)
+        {
+            Jump();
+        }
+        else if (Input.GetKeyUp(KeyCode.Space))
+        {
+            jumped = false;
+        }
 
         if (Input.GetKey(KeyCode.Return))
         {
@@ -96,7 +103,7 @@ public class playerController3D : MonoBehaviour
 
         if (jumped && canJump)
         {
-            Jump();
+            jumpTimer += Time.fixedDeltaTime; // Increment jump timer
         }
     }
 
@@ -140,22 +147,7 @@ public class playerController3D : MonoBehaviour
     //add a jumpForce and flip boolean for jump request (jumped) to false
     void Jump()
     {
-        // Apply jump force only if the jump timer is less than a certain duration
-        if (jumpTimer < maxJumpTime)
-        {
-            myRB.AddForce(Vector3.up * jumpForce);
-            jumpTimer += Time.fixedDeltaTime; // Increase the jump timer
-        }
-        else
-        {
-            jumped = false; // Disable jumping if the max jump time is reached
-        }
-
-        // Reset jump timer when the player is grounded
-        if (canJump)
-        {
-            jumpTimer = 0f;
-        }
+        myRB.AddForce(Vector3.up * jumpForce * Time.fixedDeltaTime);
     }
 
 
