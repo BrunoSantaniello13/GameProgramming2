@@ -18,6 +18,9 @@ public class playerController3D : MonoBehaviour
     public float jumpTimer = 50f; // Timer for tracking jump duration
     public float maxJumpTime = 50.0f; // Maximum duration for which the player can jump
 
+    public float jumpCooldown = 1.0f; // Cooldown period for jumping
+    private float lastJumpTime; // Timestamp of the last jump
+
 
     [Header("Kick Vars")]
     public Transform myFoot;
@@ -50,6 +53,7 @@ public class playerController3D : MonoBehaviour
         canJump = true;
         jumped = false;
         onStartTimer = 0f;
+        lastJumpTime = -jumpCooldown; // Set the initial last jump time to allow immediate jumping
         //get the current mouse position
         //zero out our rotations based off that value
 
@@ -69,10 +73,11 @@ public class playerController3D : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, myLook.x, 0f);
         myCam.transform.rotation = Quaternion.Euler(-myLook.y, myLook.x, 0f);
 
-        if (Input.GetKeyDown(KeyCode.Space) && canJump)
+        if (Input.GetKeyDown(KeyCode.Space) && canJump && Time.time - lastJumpTime > jumpCooldown)
         {
             jumped = true;
             jumpTimer = 0f; // Reset jump timer when space bar is pressed
+            lastJumpTime = Time.time; // Update the last jump time
         }
         else if (Input.GetKey(KeyCode.Space) && jumped && jumpTimer < maxJumpTime)
         {
